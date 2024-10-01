@@ -1,39 +1,22 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# App preview
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+Package para visualizar como um aplicativo ficaria em diferentes dispositivos.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+Baseado no [device_preview](https://pub.dev/packages/device_preview), busca adicionar novas funcionalidades, como a visualização em múltiplos dispositivos ao mesmo tempo, e também facilitar o uso.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## Uso
 
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Para adicionar a preview ao seu aplicativo, basta trocar a chamada do `runApp` para `runAppPreview`:
 
 ```dart
-const like = 'sample';
+import 'package:app_preview/app_review.dart';
+
+void main() {
+    runAppPreview((context) => MyApp());
+}
+
+class MyApp extends StatelessWidget {
+    ...
+}
+
 ```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
