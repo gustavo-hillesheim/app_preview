@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'src/app_preview_page.dart';
 
+export 'src/app_preview_page.dart';
+export 'src/package_asset_bundle.dart';
+
 void runAppPreview(
   WidgetBuilder appBuilder, {
   bool allowMultipleInstances = true,
