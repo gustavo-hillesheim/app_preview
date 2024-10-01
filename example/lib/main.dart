@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 void main() {
   runAppPreview(
-    (_) => const MyApp(),
+    (_) => const ExampleApp(),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ExampleApp extends StatelessWidget {
+  const ExampleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
