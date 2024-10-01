@@ -9,11 +9,12 @@ export 'src/package_asset_bundle.dart';
 
 void runAppPreview(
   WidgetBuilder appBuilder, {
-  bool allowMultipleInstances = true,
+  bool allowMultipleInstances = false,
   String? packageName,
 }) {
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       scrollBehavior: _AppScrollBehavior(),
       home: AppPreviewPage(
         appBuilder: appBuilder,
