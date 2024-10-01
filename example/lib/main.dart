@@ -2,7 +2,9 @@ import 'package:app_preview/app_preview.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runAppPreview((_) => const MyApp());
+  runAppPreview(
+    (_) => const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
