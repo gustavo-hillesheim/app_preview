@@ -1,3 +1,4 @@
+import 'package:app_preview/src/package_asset_bundle.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 
@@ -8,10 +9,12 @@ class AppPreviewPage extends StatefulWidget {
     super.key,
     required this.appBuilder,
     this.allowMultipleInstances = true,
+    this.packageName,
   });
 
   final WidgetBuilder appBuilder;
   final bool allowMultipleInstances;
+  final String? packageName;
 
   @override
   State<AppPreviewPage> createState() => _AppPreviewPageState();
@@ -41,6 +44,7 @@ class _AppPreviewPageState extends State<AppPreviewPage> {
         children: [
           for (final app in _apps)
             _AppContainer(
+              packageName: widget.packageName,
               maxWidth: maximumPreviewWidth,
               child: app,
             ),
@@ -61,14 +65,16 @@ class _AppContainer extends StatelessWidget {
   const _AppContainer({
     required this.maxWidth,
     required this.child,
+    this.packageName,
   });
 
   final double maxWidth;
   final Widget child;
+  final String? packageName;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget container = Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
       constraints: BoxConstraints(maxWidth: maxWidth),
       // Column usada para alinhamento pois ela não expande
@@ -80,6 +86,15 @@ class _AppContainer extends StatelessWidget {
         ],
       ),
     );
+
+    final packageName = this.packageName;
+    if (packageName != null && packageName.isNotEmpty) {
+      container = DefaultAssetBundle(
+        bundle: PackageAssetBundle(packageName: packageName),
+        child: container,
+      );
+    }
+    return container;
   }
 }
 

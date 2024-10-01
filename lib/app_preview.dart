@@ -7,6 +7,7 @@ import 'src/app_preview_page.dart';
 void runAppPreview(
   WidgetBuilder appBuilder, {
   bool allowMultipleInstances = true,
+  String? packageName,
 }) {
   runApp(
     MaterialApp(
@@ -14,6 +15,7 @@ void runAppPreview(
       home: AppPreviewPage(
         appBuilder: appBuilder,
         allowMultipleInstances: allowMultipleInstances,
+        packageName: packageName,
       ),
     ),
   );
