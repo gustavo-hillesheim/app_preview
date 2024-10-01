@@ -126,8 +126,8 @@ class _NewInstanceButton extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onPressed,
               style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(Colors.grey),
-                foregroundColor: WidgetStateProperty.all(Colors.white),
+                backgroundColor: MaterialStateProperty.all(Colors.grey),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
               ),
               child: const Text('Criar nova instância'),
             ),
