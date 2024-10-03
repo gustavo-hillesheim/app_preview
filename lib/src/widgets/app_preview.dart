@@ -19,12 +19,17 @@ class AppPreview extends StatefulWidget {
 class _AppPreviewState extends State<AppPreview> {
   Key _appKey = UniqueKey();
   late final _devicePreviewStore = DevicePreviewStore(
-    defaultDevice: _device,
+    defaultDevice: Devices.ios.iPhone13ProMax,
     storage: DevicePreviewStorage.preferences(),
   );
-  DeviceInfo _device = Devices.ios.iPhone13ProMax;
   Orientation _orientation = Orientation.portrait;
   double? _optionsWidth;
+
+  @override
+  void initState() {
+    super.initState();
+    _devicePreviewStore.initialize();
+  }
 
   void _restartApp() {
     setState(() {
@@ -33,9 +38,7 @@ class _AppPreviewState extends State<AppPreview> {
   }
 
   void _changeDevice(DeviceInfo device) {
-    setState(() {
-      _device = device;
-    });
+    _devicePreviewStore.selectDevice(device.identifier);
   }
 
   void _changeOrientation() {
@@ -56,45 +59,54 @@ class _AppPreviewState extends State<AppPreview> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DevicePreviewStore>.value(
       value: _devicePreviewStore,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: _optionsWidth,
-            child: PreviewOptions(
-              onChangeDevice: _changeDevice,
-              onRestartApp: _restartApp,
-              onChangeOrientation: _changeOrientation,
+      child: Builder(builder: (context) {
+        final isInitializedAndEnabled = context.select(
+          (DevicePreviewStore store) => store.isInitialized,
+        );
+        if (!isInitializedAndEnabled) {
+          return const SizedBox.shrink();
+        }
+
+        final selectedDevice = context.select(
+          (DevicePreviewStore store) => store.deviceInfo,
+        );
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: _optionsWidth,
+              child: PreviewOptions(
+                onChangeDevice: _changeDevice,
+                onRestartApp: _restartApp,
+                onChangeOrientation: _changeOrientation,
+              ),
             ),
-          ),
-          Flexible(
-            child: ConstrainedBox(
-              constraints: BoxConstraints.loose(_device.frameSize),
-              child: SizeChangeDetector(
-                onSizeChanged: _updateOptionsWidth,
-                child: DeviceFrame(
-                  device: _device,
-                  orientation: _orientation,
-                  screen: KeyedSubtree(
-                    key: _appKey,
-                    child: widget.appBuilder(context),
+            Flexible(
+              child: ConstrainedBox(
+                constraints: BoxConstraints.loose(selectedDevice.frameSize),
+                child: SizeChangeDetector(
+                  onSizeChanged: _updateOptionsWidth,
+                  child: DeviceFrame(
+                    device: selectedDevice,
+                    orientation: _orientation,
+                    screen: KeyedSubtree(
+                      key: _appKey,
+                      child: widget.appBuilder(context),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }
 
 Widget previewAppBuilder(BuildContext context, Widget? child) {
   final isInitializedAndEnabled = context.select(
-    (DevicePreviewStore store) => store.state.maybeMap(
-      initialized: (initialized) => initialized.data.isEnabled,
-      orElse: () => false,
-    ),
+    (DevicePreviewStore store) => store.isInitialized,
   );
 
   if (!isInitializedAndEnabled) {
@@ -109,4 +121,11 @@ Widget previewAppBuilder(BuildContext context, Widget? child) {
     ),
     child: child!,
   );
+}
+
+extension on DevicePreviewStore {
+  bool get isInitialized => state.maybeMap(
+        initialized: (initialized) => initialized.data.isEnabled,
+        orElse: () => false,
+      );
 }
