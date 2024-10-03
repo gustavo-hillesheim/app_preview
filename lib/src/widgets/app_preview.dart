@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets.dart';
@@ -17,6 +18,10 @@ class AppPreview extends StatefulWidget {
 
 class _AppPreviewState extends State<AppPreview> {
   Key _appKey = UniqueKey();
+  late final _devicePreviewStore = DevicePreviewStore(
+    defaultDevice: _device,
+    storage: DevicePreviewStorage.preferences(),
+  );
   DeviceInfo _device = Devices.ios.iPhone13ProMax;
   Orientation _orientation = Orientation.portrait;
   double? _optionsWidth;
@@ -49,34 +54,59 @@ class _AppPreviewState extends State<AppPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          width: _optionsWidth,
-          child: PreviewOptions(
-            onChangeDevice: _changeDevice,
-            onRestartApp: _restartApp,
-            onChangeOrientation: _changeOrientation,
+    return ChangeNotifierProvider<DevicePreviewStore>.value(
+      value: _devicePreviewStore,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: _optionsWidth,
+            child: PreviewOptions(
+              onChangeDevice: _changeDevice,
+              onRestartApp: _restartApp,
+              onChangeOrientation: _changeOrientation,
+            ),
           ),
-        ),
-        Flexible(
-          child: ConstrainedBox(
-            constraints: BoxConstraints.loose(_device.frameSize),
-            child: SizeChangeDetector(
-              onSizeChanged: _updateOptionsWidth,
-              child: DeviceFrame(
-                device: _device,
-                orientation: _orientation,
-                screen: KeyedSubtree(
-                  key: _appKey,
-                  child: widget.appBuilder(context),
+          Flexible(
+            child: ConstrainedBox(
+              constraints: BoxConstraints.loose(_device.frameSize),
+              child: SizeChangeDetector(
+                onSizeChanged: _updateOptionsWidth,
+                child: DeviceFrame(
+                  device: _device,
+                  orientation: _orientation,
+                  screen: KeyedSubtree(
+                    key: _appKey,
+                    child: widget.appBuilder(context),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+}
+
+Widget previewAppBuilder(BuildContext context, Widget? child) {
+  final isInitializedAndEnabled = context.select(
+    (DevicePreviewStore store) => store.state.maybeMap(
+      initialized: (initialized) => initialized.data.isEnabled,
+      orElse: () => false,
+    ),
+  );
+
+  if (!isInitializedAndEnabled) {
+    return child!;
+  }
+
+  final inheritedTheme = Theme.of(context);
+  return Theme(
+    data: inheritedTheme.copyWith(
+      platform: DevicePreview.platform(context),
+      visualDensity: DevicePreview.visualDensity(context),
+    ),
+    child: child!,
+  );
 }
