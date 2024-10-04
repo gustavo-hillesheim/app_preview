@@ -2,15 +2,18 @@ import 'package:device_preview/device_preview.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
+import '../package_asset_bundle.dart';
 import 'widgets.dart';
 
 class AppPreview extends StatefulWidget {
   const AppPreview({
     super.key,
     required this.appBuilder,
+    this.packageName,
   });
 
   final WidgetBuilder appBuilder;
+  final String? packageName;
 
   @override
   State<AppPreview> createState() => _AppPreviewState();
@@ -70,7 +73,8 @@ class _AppPreviewState extends State<AppPreview> {
         final selectedDevice = context.select(
           (DevicePreviewStore store) => store.deviceInfo,
         );
-        return Column(
+
+        Widget preview = Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
@@ -99,6 +103,16 @@ class _AppPreviewState extends State<AppPreview> {
             ),
           ],
         );
+
+        final packageName = widget.packageName;
+        if (packageName != null && packageName.isNotEmpty) {
+          preview = DefaultAssetBundle(
+            bundle: PackageAssetBundle(packageName: packageName),
+            child: preview,
+          );
+        }
+
+        return preview;
       }),
     );
   }

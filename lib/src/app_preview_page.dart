@@ -1,4 +1,3 @@
-import 'package:app_preview/src/package_asset_bundle.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +29,12 @@ class _AppPreviewPageState extends State<AppPreviewPage> {
   }
 
   void _createNewApp() {
-    _apps.add(AppPreview(appBuilder: widget.appBuilder));
+    _apps.add(
+      AppPreview(
+        appBuilder: widget.appBuilder,
+        packageName: widget.packageName,
+      ),
+    );
     setState(() {});
   }
 
@@ -74,7 +78,7 @@ class _AppContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget container = Container(
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
       constraints: BoxConstraints(maxWidth: maxWidth),
       // Column usada para alinhamento pois ela não expande
@@ -86,15 +90,6 @@ class _AppContainer extends StatelessWidget {
         ],
       ),
     );
-
-    final packageName = this.packageName;
-    if (packageName != null && packageName.isNotEmpty) {
-      container = DefaultAssetBundle(
-        bundle: PackageAssetBundle(packageName: packageName),
-        child: container,
-      );
-    }
-    return container;
   }
 }
 

@@ -50,12 +50,27 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: ListView.separated(
-        itemCount: _counter,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (_, i) => ListTile(
-          title: Text('Item $i'),
-        ),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            alignment: Alignment.center,
+            child: Image.asset(
+              'assets/flutter_logo.png',
+              height: 128,
+              width: 128,
+            ),
+          ),
+          Expanded(
+            child: ListView.separated(
+              itemCount: _counter,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (_, i) => ListTile(
+                title: Text('Item $i'),
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
