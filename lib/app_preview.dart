@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'src/app_preview_page.dart';
+import 'src/pages/app_preview_page.dart';
 import 'src/preview_scroll_behavior.dart';
 
-export 'src/app_preview_page.dart';
+export 'src/pages/app_preview_page.dart';
 export 'src/package_asset_bundle.dart';
 export 'src/preview_scroll_behavior.dart';
 export 'src/widgets/app_preview.dart';
@@ -38,11 +38,14 @@ class _AppPreviewApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       scrollBehavior: PreviewScrollBehavior(),
-      home: AppPreviewPage(
-        appBuilder: appBuilder,
-        allowMultipleInstances: allowMultipleInstances,
-        packageName: packageName,
-      ),
+      initialRoute: 'previews',
+      routes: {
+        'previews': (_) => AppPreviewPage(
+              appBuilder: appBuilder,
+              allowMultipleInstances: allowMultipleInstances,
+              packageName: packageName,
+            ),
+      },
     );
   }
 }
