@@ -29,10 +29,12 @@ class _AppPreviewPageState extends State<AppPreviewPage> {
   }
 
   void _createNewApp() {
+    final instanceId = _apps.length + 1;
     _apps.add(
       AppPreview(
         appBuilder: widget.appBuilder,
         packageName: widget.packageName,
+        storageKey: 'app_preview_$instanceId.settings',
       ),
     );
     setState(() {});

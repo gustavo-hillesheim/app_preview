@@ -10,10 +10,12 @@ class AppPreview extends StatefulWidget {
     super.key,
     required this.appBuilder,
     this.packageName,
+    this.storageKey,
   });
 
   final WidgetBuilder appBuilder;
   final String? packageName;
+  final String? storageKey;
 
   @override
   State<AppPreview> createState() => _AppPreviewState();
@@ -23,7 +25,9 @@ class _AppPreviewState extends State<AppPreview> {
   Key _appKey = UniqueKey();
   late final _devicePreviewStore = DevicePreviewStore(
     defaultDevice: Devices.ios.iPhone13ProMax,
-    storage: DevicePreviewStorage.preferences(),
+    storage: DevicePreviewStorage.preferences(
+      preferenceKey: widget.storageKey ?? 'app_preview.settings',
+    ),
   );
   Orientation _orientation = Orientation.portrait;
   double? _optionsWidth;
