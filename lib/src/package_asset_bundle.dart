@@ -13,18 +13,21 @@ class PackageAssetBundle extends PlatformAssetBundle {
 
   @override
   Future<ByteData> load(String key) async {
-    if (key == 'AssetManifest.bin' || key == 'AssetManifest.bin.json') {
+    if (isAssetManifestKey(key)) {
       var bytes = await super.load(key);
-      const codec =
-          kIsWeb ? _WebAssetManifestMessageCodec() : StandardMessageCodec();
-      var data = codec.decodeMessage(bytes);
-      if (data is Map) {
-        data = _removePackagePrefixFromKeysOf(data);
-      }
-      var result = codec.encodeMessage(data)!;
-      return result;
+      const codec = AssetManifestMessageCodec();
+      var assetManifest = codec.decodeMessage(bytes)!;
+      assetManifest = removePackagePrefixFromKeysOf(assetManifest);
+      return codec.encodeMessage(assetManifest)!;
     }
     return super.load(_ensureHasPackagePrefix(key));
+  }
+
+  @protected
+  bool isAssetManifestKey(String key) {
+    return kIsWeb
+        ? key == 'AssetManifest.bin.json'
+        : key == 'AssetManifest.bin';
   }
 
   String _ensureHasPackagePrefix(String key) {
@@ -34,13 +37,33 @@ class PackageAssetBundle extends PlatformAssetBundle {
     return key;
   }
 
-  Map _removePackagePrefixFromKeysOf(Map data) {
+  @protected
+  Map removePackagePrefixFromKeysOf(Map data) {
     return data.map((key, value) {
       if (key is String && key.startsWith(_packagePrefix)) {
         return MapEntry(key.substring(_packagePrefix.length), value);
       }
       return MapEntry(key, value);
     });
+  }
+}
+
+class AssetManifestMessageCodec implements MessageCodec<Map> {
+  const AssetManifestMessageCodec()
+      : _internalCodec = kIsWeb
+            ? const _WebAssetManifestMessageCodec()
+            : const StandardMessageCodec();
+
+  final MessageCodec<Object?> _internalCodec;
+
+  @override
+  Map? decodeMessage(ByteData? message) {
+    return _internalCodec.decodeMessage(message) as Map?;
+  }
+
+  @override
+  ByteData? encodeMessage(Map? message) {
+    return _internalCodec.encodeMessage(message);
   }
 }
 
