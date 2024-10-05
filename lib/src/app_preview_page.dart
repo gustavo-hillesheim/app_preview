@@ -7,12 +7,12 @@ class AppPreviewPage extends StatefulWidget {
   const AppPreviewPage({
     super.key,
     required this.appBuilder,
-    this.allowMultipleInstances = false,
+    this.allowMultipleInstances,
     this.packageName,
   });
 
   final WidgetBuilder appBuilder;
-  final bool allowMultipleInstances;
+  final bool? allowMultipleInstances;
   final String? packageName;
 
   @override
@@ -52,7 +52,7 @@ class _AppPreviewPageState extends State<AppPreviewPage> {
               maxWidth: maximumPreviewWidth,
               child: app,
             ),
-          if (widget.allowMultipleInstances)
+          if (widget.allowMultipleInstances ?? false)
             _AppContainer(
               maxWidth: maximumPreviewWidth,
               child: _NewInstanceButton(

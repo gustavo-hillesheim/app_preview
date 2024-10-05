@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 void main() {
   runAppPreview(
-    (_) => const ExampleApp(),
+    allowMultipleInstances: true,
+    appBuilder: (_) => const ExampleApp(),
   );
 }
 

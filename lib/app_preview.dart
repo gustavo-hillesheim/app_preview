@@ -8,13 +8,34 @@ export 'src/package_asset_bundle.dart';
 export 'src/preview_scroll_behavior.dart';
 export 'src/widgets/app_preview.dart';
 
-void runAppPreview(
-  WidgetBuilder appBuilder, {
-  bool allowMultipleInstances = false,
+void runAppPreview({
+  required WidgetBuilder appBuilder,
+  bool? allowMultipleInstances,
   String? packageName,
 }) {
   runApp(
-    MaterialApp(
+    _AppPreviewApp(
+      appBuilder: appBuilder,
+      allowMultipleInstances: allowMultipleInstances,
+      packageName: packageName,
+    ),
+  );
+}
+
+class _AppPreviewApp extends StatelessWidget {
+  const _AppPreviewApp({
+    required this.appBuilder,
+    this.allowMultipleInstances,
+    this.packageName,
+  });
+
+  final WidgetBuilder appBuilder;
+  final bool? allowMultipleInstances;
+  final String? packageName;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       scrollBehavior: PreviewScrollBehavior(),
       home: AppPreviewPage(
@@ -22,6 +43,6 @@ void runAppPreview(
         allowMultipleInstances: allowMultipleInstances,
         packageName: packageName,
       ),
-    ),
-  );
+    );
+  }
 }
