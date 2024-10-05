@@ -8,13 +8,15 @@ class AppPreviewPage<T> extends StatefulWidget {
   const AppPreviewPage({
     super.key,
     required this.appBuilder,
-    this.variation,
+    this.initialVariation,
+    this.availableVariations,
     this.allowMultipleInstances,
     this.packageName,
   });
 
   final PreviewBuilder<T> appBuilder;
-  final PreviewVariation<T>? variation;
+  final PreviewVariation<T>? initialVariation;
+  final List<PreviewVariation<T>>? availableVariations;
   final bool? allowMultipleInstances;
   final String? packageName;
 
@@ -28,15 +30,16 @@ class _AppPreviewPageState<T> extends State<AppPreviewPage<T>> {
   @override
   void initState() {
     super.initState();
-    _createNewApp();
+    _createNewApp(widget.initialVariation);
   }
 
-  void _createNewApp() {
+  void _createNewApp(PreviewVariation<T>? variation) {
     final instanceId = _apps.length + 1;
     _apps.add(
       AppPreview<T>(
         appBuilder: widget.appBuilder,
-        variation: widget.variation,
+        variation: variation,
+        availableVariations: widget.availableVariations,
         packageName: widget.packageName,
         storageKey: 'app_preview_$instanceId.settings',
       ),
@@ -62,7 +65,7 @@ class _AppPreviewPageState<T> extends State<AppPreviewPage<T>> {
             _AppContainer(
               maxWidth: maximumPreviewWidth,
               child: _NewInstanceButton(
-                onPressed: _createNewApp,
+                onPressed: () => _createNewApp(null),
               ),
             ),
         ],

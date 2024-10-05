@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
-class PreviewVariationSelectionPage extends StatelessWidget {
+class PreviewVariationSelectionPage<T> extends StatelessWidget {
   const PreviewVariationSelectionPage({
     super.key,
     required this.variations,
+    required this.onSelectVariation,
   });
 
-  final List<PreviewVariation> variations;
-
-  void _previewVariation(BuildContext context, PreviewVariation variation) {
-    Navigator.pushNamed(context, 'previews/${variation.id}');
-  }
+  final List<PreviewVariation<T>> variations;
+  final ValueChanged<PreviewVariation<T>> onSelectVariation;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +44,7 @@ class PreviewVariationSelectionPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: ListTile(
-                        onTap: () => _previewVariation(context, variation),
+                        onTap: () => onSelectVariation(variation),
                         title: Text(variation.name),
                       ),
                     );

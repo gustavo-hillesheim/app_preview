@@ -10,12 +10,14 @@ class AppPreview<T> extends StatefulWidget {
     super.key,
     required this.appBuilder,
     this.variation,
+    this.availableVariations,
     this.packageName,
     this.storageKey,
   });
 
   final PreviewBuilder<T> appBuilder;
   final PreviewVariation<T>? variation;
+  final List<PreviewVariation<T>>? availableVariations;
   final String? packageName;
   final String? storageKey;
 
@@ -33,11 +35,13 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
   );
   Orientation _orientation = Orientation.portrait;
   double? _optionsWidth;
+  PreviewVariation<T>? _variation;
 
   @override
   void initState() {
     super.initState();
     _devicePreviewStore.initialize();
+    _variation = widget.variation;
   }
 
   void _restartApp() {
@@ -64,6 +68,12 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
     });
   }
 
+  void _selectVariation(PreviewVariation<T> variation) {
+    setState(() {
+      _variation = variation;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DevicePreviewStore>.value(
@@ -79,6 +89,9 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
         final selectedDevice = context.select(
           (DevicePreviewStore store) => store.deviceInfo,
         );
+
+        final variations = widget.availableVariations;
+        final hasVariations = variations != null && variations.isNotEmpty;
 
         Widget preview = Column(
           mainAxisSize: MainAxisSize.min,
@@ -101,7 +114,12 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
                     orientation: _orientation,
                     screen: KeyedSubtree(
                       key: _appKey,
-                      child: widget.appBuilder(context, widget.variation),
+                      child: _variation == null && hasVariations
+                          ? PreviewVariationSelectionPage(
+                              variations: variations,
+                              onSelectVariation: _selectVariation,
+                            )
+                          : widget.appBuilder(context, _variation),
                     ),
                   ),
                 ),

@@ -56,8 +56,12 @@ class _AppPreviewApp<T> extends StatelessWidget {
         if (hasVariations) {
           if (route == 'variation-selection') {
             return MaterialPageRoute(
-              builder: (_) => PreviewVariationSelectionPage(
+              builder: (context) => PreviewVariationSelectionPage(
                 variations: variations,
+                onSelectVariation: (variation) => Navigator.pushNamed(
+                  context,
+                  'previews/${variation.id}',
+                ),
               ),
             );
           } else if (route.startsWith('previews')) {
@@ -69,7 +73,8 @@ class _AppPreviewApp<T> extends StatelessWidget {
             return MaterialPageRoute(
               builder: (_) => AppPreviewPage<T>(
                 appBuilder: appBuilder,
-                variation: selectedVariation,
+                initialVariation: selectedVariation,
+                availableVariations: variations,
                 allowMultipleInstances: allowMultipleInstances,
                 packageName: packageName,
               ),
