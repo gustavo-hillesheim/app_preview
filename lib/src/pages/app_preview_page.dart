@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/widgets.dart';
 
-class AppPreviewPage extends StatefulWidget {
+class AppPreviewPage<T> extends StatefulWidget {
   const AppPreviewPage({
     super.key,
     required this.appBuilder,
@@ -13,16 +13,16 @@ class AppPreviewPage extends StatefulWidget {
     this.packageName,
   });
 
-  final PreviewBuilder appBuilder;
-  final PreviewVariation? variation;
+  final PreviewBuilder<T> appBuilder;
+  final PreviewVariation<T>? variation;
   final bool? allowMultipleInstances;
   final String? packageName;
 
   @override
-  State<AppPreviewPage> createState() => _AppPreviewPageState();
+  State<AppPreviewPage> createState() => _AppPreviewPageState<T>();
 }
 
-class _AppPreviewPageState extends State<AppPreviewPage> {
+class _AppPreviewPageState<T> extends State<AppPreviewPage<T>> {
   final _apps = <Widget>[];
 
   @override
@@ -34,7 +34,7 @@ class _AppPreviewPageState extends State<AppPreviewPage> {
   void _createNewApp() {
     final instanceId = _apps.length + 1;
     _apps.add(
-      AppPreview(
+      AppPreview<T>(
         appBuilder: widget.appBuilder,
         variation: widget.variation,
         packageName: widget.packageName,

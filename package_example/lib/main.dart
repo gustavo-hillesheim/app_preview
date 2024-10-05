@@ -8,6 +8,7 @@ void main() {
     variations: appVariations,
     appBuilder: (_, variation) => ExampleApp(
       title: variation!.name,
+      theme: variation.data!,
     ),
   );
 }

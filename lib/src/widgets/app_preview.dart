@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'widgets.dart';
 
-class AppPreview extends StatefulWidget {
+class AppPreview<T> extends StatefulWidget {
   const AppPreview({
     super.key,
     required this.appBuilder,
@@ -14,16 +14,16 @@ class AppPreview extends StatefulWidget {
     this.storageKey,
   });
 
-  final PreviewBuilder appBuilder;
-  final PreviewVariation? variation;
+  final PreviewBuilder<T> appBuilder;
+  final PreviewVariation<T>? variation;
   final String? packageName;
   final String? storageKey;
 
   @override
-  State<AppPreview> createState() => _AppPreviewState();
+  State<AppPreview> createState() => _AppPreviewState<T>();
 }
 
-class _AppPreviewState extends State<AppPreview> {
+class _AppPreviewState<T> extends State<AppPreview<T>> {
   Key _appKey = UniqueKey();
   late final _devicePreviewStore = DevicePreviewStore(
     defaultDevice: Devices.ios.iPhone13ProMax,
@@ -143,9 +143,9 @@ Widget previewAppBuilder(BuildContext context, Widget? child) {
   );
 }
 
-typedef PreviewBuilder = Widget Function(
+typedef PreviewBuilder<T> = Widget Function(
   BuildContext context,
-  PreviewVariation? variation,
+  PreviewVariation<T>? variation,
 );
 
 extension on DevicePreviewStore {

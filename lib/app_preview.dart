@@ -11,14 +11,14 @@ export 'src/pages/pages.dart';
 export 'src/preview_scroll_behavior.dart';
 export 'src/widgets/app_preview.dart';
 
-void runAppPreview({
-  required PreviewBuilder appBuilder,
-  List<PreviewVariation>? variations,
+void runAppPreview<T>({
+  required PreviewBuilder<T> appBuilder,
+  List<PreviewVariation<T>>? variations,
   bool? allowMultipleInstances,
   String? packageName,
 }) {
   runApp(
-    _AppPreviewApp(
+    _AppPreviewApp<T>(
       appBuilder: appBuilder,
       variations: variations,
       allowMultipleInstances: allowMultipleInstances,
@@ -27,7 +27,7 @@ void runAppPreview({
   );
 }
 
-class _AppPreviewApp extends StatelessWidget {
+class _AppPreviewApp<T> extends StatelessWidget {
   const _AppPreviewApp({
     required this.appBuilder,
     this.variations,
@@ -35,8 +35,8 @@ class _AppPreviewApp extends StatelessWidget {
     this.packageName,
   });
 
-  final PreviewBuilder appBuilder;
-  final List<PreviewVariation>? variations;
+  final PreviewBuilder<T> appBuilder;
+  final List<PreviewVariation<T>>? variations;
   final bool? allowMultipleInstances;
   final String? packageName;
 
@@ -67,7 +67,7 @@ class _AppPreviewApp extends StatelessWidget {
               orElse: () => variations.first,
             );
             return MaterialPageRoute(
-              builder: (_) => AppPreviewPage(
+              builder: (_) => AppPreviewPage<T>(
                 appBuilder: appBuilder,
                 variation: selectedVariation,
                 allowMultipleInstances: allowMultipleInstances,
@@ -77,7 +77,7 @@ class _AppPreviewApp extends StatelessWidget {
           }
         } else {
           return MaterialPageRoute(
-            builder: (_) => AppPreviewPage(
+            builder: (_) => AppPreviewPage<T>(
               appBuilder: appBuilder,
               allowMultipleInstances: allowMultipleInstances,
               packageName: packageName,
