@@ -5,6 +5,9 @@ void main() {
   runAppPreview(
     packageName: 'example',
     allowMultipleInstances: true,
-    appBuilder: (_) => const ExampleApp(),
+    variations: appVariations,
+    appBuilder: (_, variation) => ExampleApp(
+      title: variation!.name,
+    ),
   );
 }

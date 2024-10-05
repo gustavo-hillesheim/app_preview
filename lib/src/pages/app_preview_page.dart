@@ -1,3 +1,4 @@
+import 'package:app_preview/app_preview.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 
@@ -7,11 +8,13 @@ class AppPreviewPage extends StatefulWidget {
   const AppPreviewPage({
     super.key,
     required this.appBuilder,
+    this.variation,
     this.allowMultipleInstances,
     this.packageName,
   });
 
-  final WidgetBuilder appBuilder;
+  final PreviewBuilder appBuilder;
+  final PreviewVariation? variation;
   final bool? allowMultipleInstances;
   final String? packageName;
 
@@ -33,6 +36,7 @@ class _AppPreviewPageState extends State<AppPreviewPage> {
     _apps.add(
       AppPreview(
         appBuilder: widget.appBuilder,
+        variation: widget.variation,
         packageName: widget.packageName,
         storageKey: 'app_preview_$instanceId.settings',
       ),

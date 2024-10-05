@@ -1,19 +1,21 @@
+import 'package:app_preview/app_preview.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-import '../package_asset_bundle.dart';
 import 'widgets.dart';
 
 class AppPreview extends StatefulWidget {
   const AppPreview({
     super.key,
     required this.appBuilder,
+    this.variation,
     this.packageName,
     this.storageKey,
   });
 
-  final WidgetBuilder appBuilder;
+  final PreviewBuilder appBuilder;
+  final PreviewVariation? variation;
   final String? packageName;
   final String? storageKey;
 
@@ -99,7 +101,7 @@ class _AppPreviewState extends State<AppPreview> {
                     orientation: _orientation,
                     screen: KeyedSubtree(
                       key: _appKey,
-                      child: widget.appBuilder(context),
+                      child: widget.appBuilder(context, widget.variation),
                     ),
                   ),
                 ),
@@ -140,6 +142,11 @@ Widget previewAppBuilder(BuildContext context, Widget? child) {
     child: child!,
   );
 }
+
+typedef PreviewBuilder = Widget Function(
+  BuildContext context,
+  PreviewVariation? variation,
+);
 
 extension on DevicePreviewStore {
   bool get isInitialized => state.maybeMap(

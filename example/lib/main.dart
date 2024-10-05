@@ -4,12 +4,31 @@ import 'package:flutter/material.dart';
 void main() {
   runAppPreview(
     allowMultipleInstances: true,
-    appBuilder: (_) => const ExampleApp(),
+    variations: appVariations,
+    appBuilder: (_, variation) => ExampleApp(
+      title: variation!.name,
+    ),
   );
 }
 
+const appVariations = [
+  PreviewVariation(
+    id: 'variation_1',
+    name: 'Variação 1',
+  ),
+  PreviewVariation(
+    id: 'variation_2',
+    name: 'Variação 2',
+  ),
+];
+
 class ExampleApp extends StatelessWidget {
-  const ExampleApp({super.key});
+  const ExampleApp({
+    super.key,
+    required this.title,
+  });
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +40,7 @@ class ExampleApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: title),
     );
   }
 }
