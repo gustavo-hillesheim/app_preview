@@ -7,7 +7,7 @@ class AppPreviewPage extends StatefulWidget {
   const AppPreviewPage({
     super.key,
     required this.appBuilder,
-    this.allowMultipleInstances = true,
+    this.allowMultipleInstances = false,
     this.packageName,
   });
 
