@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 void main() {
   runAppPreview(
     allowMultipleInstances: true,
+    isolateAppInstances: true,
     variations: appVariations,
     appBuilder: (_, variation) => ExampleApp(
       title: variation!.name,

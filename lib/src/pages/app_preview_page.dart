@@ -12,6 +12,7 @@ class AppPreviewPage<T> extends StatefulWidget {
     this.availableVariations,
     this.allowMultipleInstances,
     this.packageName,
+    this.isolateAppInstances,
   });
 
   final PreviewBuilder<T> appBuilder;
@@ -19,6 +20,7 @@ class AppPreviewPage<T> extends StatefulWidget {
   final List<PreviewVariation<T>>? availableVariations;
   final bool? allowMultipleInstances;
   final String? packageName;
+  final bool? isolateAppInstances;
 
   @override
   State<AppPreviewPage> createState() => _AppPreviewPageState<T>();
@@ -42,6 +44,7 @@ class _AppPreviewPageState<T> extends State<AppPreviewPage<T>> {
         availableVariations: widget.availableVariations,
         packageName: widget.packageName,
         storageKey: 'app_preview_$instanceId.settings',
+        isolateAppInstances: widget.isolateAppInstances,
       ),
     );
     setState(() {});

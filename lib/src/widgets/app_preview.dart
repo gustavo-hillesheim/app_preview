@@ -13,6 +13,8 @@ class AppPreview<T> extends StatefulWidget {
     this.availableVariations,
     this.packageName,
     this.storageKey,
+    this.isolateAppInstances,
+    this.hasFrameAndOptions,
   });
 
   final PreviewBuilder<T> appBuilder;
@@ -20,6 +22,8 @@ class AppPreview<T> extends StatefulWidget {
   final List<PreviewVariation<T>>? availableVariations;
   final String? packageName;
   final String? storageKey;
+  final bool? isolateAppInstances;
+  final bool? hasFrameAndOptions;
 
   @override
   State<AppPreview> createState() => _AppPreviewState<T>();
@@ -90,20 +94,20 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
           (DevicePreviewStore store) => store.deviceInfo,
         );
 
-        final variations = widget.availableVariations;
-        final hasVariations = variations != null && variations.isNotEmpty;
-
-        Widget preview = Column(
+        Widget preview = _buildPreview(context);
+        final hasFrameAndOptions = widget.hasFrameAndOptions ?? true;
+        preview = Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              width: _optionsWidth,
-              child: PreviewOptions(
-                onChangeDevice: _changeDevice,
-                onRestartApp: _restartApp,
-                onChangeOrientation: _changeOrientation,
+            if (hasFrameAndOptions)
+              SizedBox(
+                width: _optionsWidth,
+                child: PreviewOptions(
+                  onChangeDevice: _changeDevice,
+                  onRestartApp: _restartApp,
+                  onChangeOrientation: _changeOrientation,
+                ),
               ),
-            ),
             Flexible(
               child: ConstrainedBox(
                 constraints: BoxConstraints.loose(selectedDevice.frameSize),
@@ -111,15 +115,11 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
                   onSizeChanged: _updateOptionsWidth,
                   child: DeviceFrame(
                     device: selectedDevice,
+                    isFrameVisible: hasFrameAndOptions,
                     orientation: _orientation,
                     screen: KeyedSubtree(
                       key: _appKey,
-                      child: _variation == null && hasVariations
-                          ? PreviewVariationSelectionPage(
-                              variations: variations,
-                              onSelectVariation: _selectVariation,
-                            )
-                          : widget.appBuilder(context, _variation),
+                      child: preview,
                     ),
                   ),
                 ),
@@ -139,6 +139,24 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
         return preview;
       }),
     );
+  }
+
+  Widget _buildPreview(BuildContext context) {
+    final variations = widget.availableVariations;
+    final hasVariations = variations != null && variations.isNotEmpty;
+
+    if (_variation == null && hasVariations) {
+      return PreviewVariationSelectionPage(
+        variations: variations,
+        onSelectVariation: _selectVariation,
+      );
+    } else if ((widget.isolateAppInstances ?? false) &&
+        IsolatedAppInstance.supportsCurrentPlatform) {
+      return IsolatedAppInstance<T>(
+        variation: _variation,
+      );
+    }
+    return widget.appBuilder(context, _variation);
   }
 }
 
