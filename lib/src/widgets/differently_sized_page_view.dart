@@ -9,12 +9,12 @@ import 'widgets.dart';
 class DifferentlySizedPageView extends StatefulWidget {
   const DifferentlySizedPageView({
     super.key,
-    required this.children,
+    required this.items,
     this.padding,
   });
 
   final EdgeInsetsGeometry? padding;
-  final List<Widget> children;
+  final List<DifferentlySizedPageViewItem> items;
 
   @override
   State<DifferentlySizedPageView> createState() =>
@@ -28,14 +28,14 @@ class _DifferentlySizedPageViewState extends State<DifferentlySizedPageView> {
   @override
   void initState() {
     super.initState();
-    _childrenSizes = List.filled(widget.children.length, 0);
+    _childrenSizes = List.filled(widget.items.length, 0);
   }
 
   @override
   void didUpdateWidget(covariant DifferentlySizedPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.children.length != oldWidget.children.length) {
-      final newWidths = List<double>.filled(widget.children.length, 0);
+    if (widget.items.length != oldWidget.items.length) {
+      final newWidths = List<double>.filled(widget.items.length, 0);
       final widthsToCopy = min(newWidths.length, _childrenSizes.length);
       for (int i = 0; i < widthsToCopy; i++) {
         newWidths[i] = _childrenSizes[i];
@@ -99,31 +99,51 @@ class _DifferentlySizedPageViewState extends State<DifferentlySizedPageView> {
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
         return ListenableBuilder(
-            listenable: _controller,
-            builder: (context, _) {
-              final pageWidth = _calculatePageWidth();
-              final remainingWidth =
-                  maxWidth - pageWidth - (widget.padding?.horizontal ?? 0);
-              final horizontalSpacing = max(remainingWidth / 2, 0.0);
-              return ListView(
-                padding: EdgeInsets.symmetric(horizontal: horizontalSpacing)
-                    .add(widget.padding ?? EdgeInsets.zero),
-                controller: _controller,
-                physics: _ScrollPhysics(() => _childrenSizes),
-                scrollDirection: Axis.horizontal,
-                children: [
-                  for (int i = 0; i < widget.children.length; i++)
-                    SizeChangeDetector(
+          listenable: _controller,
+          builder: (context, _) {
+            final pageWidth = _calculatePageWidth();
+            final remainingWidth =
+                maxWidth - pageWidth - (widget.padding?.horizontal ?? 0);
+            final horizontalSpacing = max(remainingWidth / 2, 0.0);
+            return ListView(
+              padding: EdgeInsets.symmetric(horizontal: horizontalSpacing)
+                  .add(widget.padding ?? EdgeInsets.zero),
+              controller: _controller,
+              physics: _ScrollPhysics(() => _childrenSizes),
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (int i = 0; i < widget.items.length; i++)
+                  KeyedSubtree(
+                    key: widget.items[i].key,
+                    child: SizeChangeDetector(
                       onSizeChanged: (size) => _updateChildSize(i, size),
-                      child: widget.children[i],
+                      child: widget.items[i].child,
                     ),
-                ],
-              );
-            });
+                  ),
+              ],
+            );
+          },
+        );
       },
     );
   }
 }
+
+class DifferentlySizedPageViewItem {
+  const DifferentlySizedPageViewItem({
+    this.key,
+    required this.child,
+  });
+
+  final Key? key;
+  final Widget child;
+}
+
+typedef DifferentlySizedPageViewItemBuilder = DifferentlySizedPageViewItem
+    Function(
+  BuildContext context,
+  int index,
+);
 
 class _ScrollPhysics extends ScrollPhysics {
   const _ScrollPhysics(

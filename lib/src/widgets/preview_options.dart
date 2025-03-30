@@ -10,6 +10,7 @@ class PreviewOptions extends StatelessWidget {
     required this.onToggleBrightness,
     required this.onRestartApp,
     required this.onChangeOrientation,
+    required this.onDeleteInstance,
     required this.brightness,
   });
 
@@ -17,6 +18,7 @@ class PreviewOptions extends StatelessWidget {
   final VoidCallback onRestartApp;
   final VoidCallback onToggleBrightness;
   final ValueChanged<DeviceInfo> onChangeDevice;
+  final VoidCallback? onDeleteInstance;
   final Brightness? brightness;
 
   @override
@@ -50,6 +52,12 @@ class PreviewOptions extends StatelessWidget {
             onPressed: onRestartApp,
             icon: const Icon(Icons.restart_alt),
           ),
+          if (onDeleteInstance != null)
+            IconButton(
+              tooltip: 'Remover instância',
+              onPressed: onDeleteInstance,
+              icon: const Icon(Icons.close),
+            ),
         ],
       ),
     );

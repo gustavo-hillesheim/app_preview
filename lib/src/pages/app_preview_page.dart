@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app_preview/app_preview.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,8 @@ class AppPreviewPage<T> extends StatefulWidget {
 }
 
 class _AppPreviewPageState<T> extends State<AppPreviewPage<T>> {
-  final _apps = <Widget>[];
+  final _appInstances = <_AppInstance<T>>[];
+  int _ids = 0;
 
   @override
   void initState() {
@@ -36,18 +39,21 @@ class _AppPreviewPageState<T> extends State<AppPreviewPage<T>> {
   }
 
   void _createNewApp(PreviewVariation<T>? variation) {
-    final instanceId = _apps.length + 1;
-    _apps.add(
-      AppPreview<T>(
-        appBuilder: widget.appBuilder,
+    setState(() {
+      final id = Random().nextDouble().toString().split('.').last;
+      final storageKey = 'app_preview_${_ids++}.settings';
+      _appInstances.add(_AppInstance(
+        id: id,
+        storageKey: storageKey,
         variation: variation,
-        availableVariations: widget.availableVariations,
-        packageName: widget.packageName,
-        storageKey: 'app_preview_$instanceId.settings',
-        isolateAppInstances: widget.isolateAppInstances,
-      ),
-    );
-    setState(() {});
+      ));
+    });
+  }
+
+  void _removeInstanceById(String id) {
+    setState(() {
+      _appInstances.removeWhere((i) => i.id == id);
+    });
   }
 
   @override
@@ -57,24 +63,52 @@ class _AppPreviewPageState<T> extends State<AppPreviewPage<T>> {
     return Scaffold(
       body: DifferentlySizedPageView(
         padding: const EdgeInsets.all(32),
-        children: [
-          for (final app in _apps)
-            _AppContainer(
-              packageName: widget.packageName,
-              maxWidth: maximumPreviewWidth,
-              child: app,
+        items: [
+          for (final instance in _appInstances)
+            DifferentlySizedPageViewItem(
+              key: ValueKey(instance.id),
+              child: _AppContainer(
+                packageName: widget.packageName,
+                maxWidth: maximumPreviewWidth,
+                child: AppPreview<T>(
+                  key: ValueKey(instance.id),
+                  appBuilder: widget.appBuilder,
+                  variation: instance.variation,
+                  availableVariations: widget.availableVariations,
+                  packageName: widget.packageName,
+                  storageKey: instance.storageKey,
+                  isolateAppInstances: widget.isolateAppInstances,
+                  onDeleteInstance: _appInstances.length > 1
+                      ? () => _removeInstanceById(instance.id)
+                      : null,
+                ),
+              ),
             ),
           if (widget.allowMultipleInstances ?? false)
-            _AppContainer(
-              maxWidth: maximumPreviewWidth,
-              child: _NewInstanceButton(
-                onPressed: () => _createNewApp(null),
+            DifferentlySizedPageViewItem(
+              child: _AppContainer(
+                maxWidth: maximumPreviewWidth,
+                child: _NewInstanceButton(
+                  onPressed: () => _createNewApp(null),
+                ),
               ),
             ),
         ],
       ),
     );
   }
+}
+
+class _AppInstance<T> {
+  const _AppInstance({
+    required this.id,
+    required this.storageKey,
+    required this.variation,
+  });
+
+  final String id;
+  final String storageKey;
+  final PreviewVariation<T>? variation;
 }
 
 class _AppContainer extends StatelessWidget {

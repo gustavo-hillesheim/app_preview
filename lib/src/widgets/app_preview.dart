@@ -15,6 +15,7 @@ class AppPreview<T> extends StatefulWidget {
     this.storageKey,
     this.isolateAppInstances,
     this.hasFrameAndOptions,
+    this.onDeleteInstance,
   });
 
   final PreviewBuilder<T> appBuilder;
@@ -24,6 +25,7 @@ class AppPreview<T> extends StatefulWidget {
   final String? storageKey;
   final bool? isolateAppInstances;
   final bool? hasFrameAndOptions;
+  final VoidCallback? onDeleteInstance;
 
   @override
   State<AppPreview> createState() => _AppPreviewState<T>();
@@ -117,6 +119,7 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
                   onRestartApp: _restartApp,
                   onToggleBrightness: _toggleBrightness,
                   onChangeOrientation: _changeOrientation,
+                  onDeleteInstance: widget.onDeleteInstance,
                   brightness: _brightness,
                 ),
               ),
