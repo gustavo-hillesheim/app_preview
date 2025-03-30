@@ -10,7 +10,7 @@ void main() {
       variation ??= appVariations.first;
       return ExampleApp(
         title: variation.name,
-        theme: variation.data!,
+        seedColor: variation.data!,
       );
     },
   );
