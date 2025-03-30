@@ -74,6 +74,8 @@ class _AppPreviewApp<T> extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       scrollBehavior: PreviewScrollBehavior(),
       initialRoute: hasVariations ? 'variation-selection' : '/previews',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       onGenerateRoute: (settings) {
         final route = settings.name;
         if (route == null) return null;

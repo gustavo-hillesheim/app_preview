@@ -115,32 +115,29 @@ class _NewInstanceButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final device = Devices.ios.iPhone13;
+    final colors = Theme.of(context).colorScheme;
 
-    return Stack(
-      children: [
-        ColorFiltered(
-          colorFilter: ColorFilter.mode(
-            Colors.grey.withAlpha(122),
-            BlendMode.srcIn,
-          ),
-          child: DeviceFrame(
-            device: device,
-            screen: const SizedBox.shrink(),
-          ),
-        ),
-        Positioned.fill(
+    return DeviceFrame(
+      device: device,
+      screen: Material(
+        color: colors.inverseSurface.withAlpha(25),
+        child: InkWell(
+          onTap: onPressed,
           child: Center(
-            child: ElevatedButton(
-              onPressed: onPressed,
-              style: const ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.grey),
-                foregroundColor: WidgetStatePropertyAll(Colors.white),
-              ),
-              child: const Text('Criar nova instância'),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 8,
+              children: [
+                const Icon(Icons.add),
+                Text(
+                  'Criar nova instância',
+                  style: TextStyle(color: colors.onSurface),
+                ),
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
