@@ -1,22 +1,21 @@
-# App preview
+# App Preview  
 
-Package para visualizar como um aplicativo ficaria em diferentes dispositivos.
+A package to visualize how an application would look on different devices.  
 
-Baseado no [device_preview](https://pub.dev/packages/device_preview), busca adicionar novas funcionalidades, como a visualização em múltiplos dispositivos ao mesmo tempo, e também facilitar o uso.
+Based on [device_preview](https://pub.dev/packages/device_preview), this package aims to add new features, such as viewing multiple devices simultaneously, while also making usage easier.  
 
-## Uso
+## Usage  
 
-Para adicionar a preview ao seu aplicativo, basta trocar a chamada do `runApp` para `runAppPreview`:
+To add the preview to your application, simply replace the `runApp` call with `runAppPreview`:  
 
 ```dart
 import 'package:app_preview/app_review.dart';
 
 void main() {
-    runAppPreview((context) => MyApp());
+    runAppPreview(appBuilder: (_) => MyApp());
 }
 
 class MyApp extends StatelessWidget {
     ...
 }
-
 ```
