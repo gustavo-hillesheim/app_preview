@@ -6,9 +6,12 @@ void main() {
     packageName: 'example',
     allowMultipleInstances: true,
     variations: appVariations,
-    appBuilder: (_, variation) => ExampleApp(
-      title: variation!.name,
-      theme: variation.data!,
-    ),
+    appBuilder: (variation) {
+      variation ??= appVariations.first;
+      return ExampleApp(
+        title: variation.name,
+        theme: variation.data!,
+      );
+    },
   );
 }

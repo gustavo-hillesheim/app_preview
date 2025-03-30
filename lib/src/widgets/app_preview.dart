@@ -156,13 +156,13 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
         variation: _variation,
       );
     }
-    return widget.appBuilder(context, _variation);
+    return widget.appBuilder(_variation);
   }
 }
 
 Widget previewAppBuilder(BuildContext context, Widget? child) {
   final isInitializedAndEnabled = context.select(
-    (DevicePreviewStore store) => store.isInitialized,
+    (DevicePreviewStore? store) => store?.isInitialized ?? false,
   );
 
   if (!isInitializedAndEnabled) {
@@ -180,7 +180,6 @@ Widget previewAppBuilder(BuildContext context, Widget? child) {
 }
 
 typedef PreviewBuilder<T> = Widget Function(
-  BuildContext context,
   PreviewVariation<T>? variation,
 );
 

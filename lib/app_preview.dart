@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'src/pages/pages.dart';
@@ -17,8 +18,16 @@ void runAppPreview<T>({
   List<PreviewVariation<T>>? variations,
   bool? allowMultipleInstances,
   bool? isolateAppInstances,
+  bool? isEnabled,
   String? packageName,
 }) {
+  isEnabled ??= _defaultIsEnabled();
+
+  if (!isEnabled) {
+    runApp(appBuilder(null));
+    return;
+  }
+
   registerPlatformViews();
 
   runApp(
@@ -30,6 +39,15 @@ void runAppPreview<T>({
       packageName: packageName,
     ),
   );
+}
+
+bool _defaultIsEnabled() {
+  final desktopPlatforms = [
+    TargetPlatform.windows,
+    TargetPlatform.macOS,
+    TargetPlatform.linux,
+  ];
+  return !kReleaseMode && desktopPlatforms.contains(defaultTargetPlatform);
 }
 
 class _AppPreviewApp<T> extends StatelessWidget {
