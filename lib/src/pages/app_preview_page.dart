@@ -120,7 +120,7 @@ class _NewInstanceButton extends StatelessWidget {
       children: [
         ColorFiltered(
           colorFilter: ColorFilter.mode(
-            Colors.grey.withOpacity(0.5),
+            Colors.grey.withAlpha(122),
             BlendMode.srcIn,
           ),
           child: DeviceFrame(
@@ -132,9 +132,9 @@ class _NewInstanceButton extends StatelessWidget {
           child: Center(
             child: ElevatedButton(
               onPressed: onPressed,
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.grey),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
+              style: const ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.grey),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
               ),
               child: const Text('Criar nova instância'),
             ),
