@@ -7,13 +7,17 @@ class PreviewOptions extends StatelessWidget {
   const PreviewOptions({
     super.key,
     required this.onChangeDevice,
+    required this.onToggleBrightness,
     required this.onRestartApp,
     required this.onChangeOrientation,
+    required this.brightness,
   });
 
   final VoidCallback onChangeOrientation;
   final VoidCallback onRestartApp;
+  final VoidCallback onToggleBrightness;
   final ValueChanged<DeviceInfo> onChangeDevice;
+  final Brightness? brightness;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +28,15 @@ class PreviewOptions extends StatelessWidget {
           tooltip: 'Alterar orientação',
           onPressed: onChangeOrientation,
           icon: const Icon(Icons.screen_rotation),
+        ),
+        IconButton(
+          tooltip: 'Alterar tema',
+          onPressed: onToggleBrightness,
+          icon: Icon(
+            brightness == Brightness.light
+                ? Icons.light_mode_outlined
+                : Icons.dark_mode_outlined,
+          ),
         ),
         DeviceSelector(
           onSelected: onChangeDevice,

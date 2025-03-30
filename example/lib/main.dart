@@ -10,22 +10,22 @@ void main() {
       variation ??= appVariations.first;
       return ExampleApp(
         title: variation.name,
-        theme: variation.data!,
+        seedColor: variation.data!,
       );
     },
   );
 }
 
-final appVariations = <PreviewVariation<ThemeData>>[
+const appVariations = <PreviewVariation<Color>>[
   PreviewVariation(
-    id: 'light_theme_variation',
-    name: 'Tema Claro',
-    data: ThemeData.light(),
+    id: 'red_theme_variation',
+    name: 'Tema Vermelho',
+    data: Colors.red,
   ),
   PreviewVariation(
-    id: 'dark_theme_variation',
-    name: 'Tema Escuro',
-    data: ThemeData.dark(),
+    id: 'blue_theme_variation',
+    name: 'Tema Azul',
+    data: Colors.blue,
   ),
 ];
 
@@ -33,11 +33,11 @@ class ExampleApp extends StatelessWidget {
   const ExampleApp({
     super.key,
     required this.title,
-    required this.theme,
+    required this.seedColor,
   });
 
   final String title;
-  final ThemeData theme;
+  final Color seedColor;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,18 @@ class ExampleApp extends StatelessWidget {
       builder: previewAppBuilder,
       scrollBehavior: PreviewScrollBehavior(),
       title: 'Flutter Demo',
-      theme: theme,
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: seedColor,
+          brightness: Brightness.light,
+        ),
+      ),
+      darkTheme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: seedColor,
+          brightness: Brightness.dark,
+        ),
+      ),
       home: MyHomePage(title: title),
     );
   }

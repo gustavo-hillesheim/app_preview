@@ -38,6 +38,7 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
     ),
   );
   Orientation _orientation = Orientation.portrait;
+  Brightness? _brightness;
   double? _optionsWidth;
   PreviewVariation<T>? _variation;
 
@@ -78,8 +79,17 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
     });
   }
 
+  void _toggleBrightness() {
+    setState(() {
+      _brightness =
+          _brightness == Brightness.dark ? Brightness.light : Brightness.dark;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final mediaQueryData = MediaQuery.of(context);
+    _brightness ??= mediaQueryData.platformBrightness;
     return ChangeNotifierProvider<DevicePreviewStore>.value(
       value: _devicePreviewStore,
       child: Builder(builder: (context) {
@@ -105,7 +115,9 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
                 child: PreviewOptions(
                   onChangeDevice: _changeDevice,
                   onRestartApp: _restartApp,
+                  onToggleBrightness: _toggleBrightness,
                   onChangeOrientation: _changeOrientation,
+                  brightness: _brightness,
                 ),
               ),
             Flexible(
@@ -113,13 +125,18 @@ class _AppPreviewState<T> extends State<AppPreview<T>> {
                 constraints: BoxConstraints.loose(selectedDevice.frameSize),
                 child: SizeChangeDetector(
                   onSizeChanged: _updateOptionsWidth,
-                  child: DeviceFrame(
-                    device: selectedDevice,
-                    isFrameVisible: hasFrameAndOptions,
-                    orientation: _orientation,
-                    screen: KeyedSubtree(
-                      key: _appKey,
-                      child: preview,
+                  child: MediaQuery(
+                    data: mediaQueryData.copyWith(
+                      platformBrightness: _brightness,
+                    ),
+                    child: DeviceFrame(
+                      device: selectedDevice,
+                      isFrameVisible: hasFrameAndOptions,
+                      orientation: _orientation,
+                      screen: KeyedSubtree(
+                        key: _appKey,
+                        child: preview,
+                      ),
                     ),
                   ),
                 ),
